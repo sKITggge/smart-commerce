@@ -35,15 +35,32 @@
           </button>
         </div>
 
-        <nav class="flex flex-col gap-2">
+        <div
+          v-if="isLoading"
+          class="flex justify-center p-4"
+        >
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        </div>
+
+        <div
+          v-else-if="error"
+          class="text-red-600 p-4"
+        >
+          Ошибка загрузки категорий: {{ error.message }}
+        </div>
+
+        <nav
+          v-else
+          class="flex flex-col gap-2"
+        >
           <NuxtLink
             v-for="cat in categories"
-            :key="cat.label"
-            :to="{ path: '/products', query: { category: cat.category } }"
+            :key="cat.slug"
+            :to="{ path: '/products', query: { category: cat.slug } }"
             class="px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
             @click="emit('close')"
           >
-            {{ cat.label }}
+            {{ cat.name }}
           </NuxtLink>
 
           <div class="border-t border-gray-300 px-4 py-2">QUICK LINKS</div>
@@ -108,23 +125,7 @@ onUnmounted(() => {
   }
 })
 
-const categories = [
-  { label: 'Beauty', category: 'beauty' },
-  { label: 'Furniture', category: 'furniture' },
-  { label: 'Science', category: 'science' },
-  { label: 'Groceries', category: 'groceries' },
-  { label: 'Business', category: 'business' },
-  { label: 'Laptops', category: 'laptops' },
-  { label: 'Mens Shirts', category: 'mens-shirts' },
-  { label: 'Toys', category: 'toys' },
-  { label: 'Sports', category: 'sports' },
-  { label: 'Books', category: 'books' },
-  { label: 'Electronics', category: 'electronics' },
-  { label: 'Garden', category: 'garden' },
-  { label: 'Pet Supplies', category: 'pet-supplies' },
-  { label: 'Automotive', category: 'automotive' },
-  { label: 'Clothing', category: 'clothing' }
-]
+const { categories, isLoading, error } = useFetchCategories()
 </script>
 
 <style scoped>
