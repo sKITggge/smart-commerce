@@ -33,3 +33,7 @@ a {
     color: inherit;
     text-decoration: none;
 }
+
+.search-panel {
+    @apply py-1 px-3 rounded-2xl transition-colors bg-gray-100 hover:bg-gray-200 border border-gray-200;
+}
