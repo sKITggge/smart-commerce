@@ -21,10 +21,11 @@
               v-for="link in column.links"
               :key="link.label"
             >
-              <NuxtLink :to="link.to">
-                <span class="text-gray-600 hover:text-blue-400 transition-colors">
-                  {{ link.label }}
-                </span>
+              <NuxtLink
+                :to="link.to"
+                class="text-gray-600 hover:text-blue-400 transition-colors"
+              >
+                {{ link.label }}
               </NuxtLink>
             </li>
           </ul>
@@ -38,7 +39,7 @@
   </footer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const footerLinks = [
   {
     title: 'Shop',
