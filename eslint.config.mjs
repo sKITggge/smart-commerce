@@ -6,7 +6,8 @@ export default withNuxt([
   eslintPluginPrettierRecommended,
   {
     rules: {
-      'vue/attribute-hyphenation': 'off'
+      'vue/attribute-hyphenation': 'off',
+      'prettier/prettier': ['error', { endOfLine: 'auto' }]
     }
   }
 ])
