@@ -1,6 +1,9 @@
 <template>
-  <div class="grid grid-cols-5">
-    <ProductCard :product="product" />
+  <div>
+    <MainHero />
+    <div class="grid grid-cols-5">
+      <ProductCard :product="product" />
+    </div>
   </div>
 </template>
 
