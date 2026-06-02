@@ -43,7 +43,9 @@ const props = withDefaults(defineProps<Props>(), {
   size: 16
 })
 
-const fullStars = Math.floor(props.rating)
-const hasHalfStar = props.rating % 1 !== 0
-const emptyStars = props.max - fullStars - (hasHalfStar ? 1 : 0)
+const fullStars = computed(() => Math.floor(props.rating))
+const hasHalfStar = computed(() => props.rating % 1 !== 0)
+const emptyStars = computed(() =>
+  props.max - fullStars.value - (hasHalfStar.value ? 1 : 0)
+)
 </script>

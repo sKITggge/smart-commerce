@@ -19,7 +19,7 @@
 
       <button
         class="absolute right-2 bottom-2 wishlist-button"
-        @click="$emit('handleAddToCart', product.id)"
+        @click="$emit('handleAddToWishlist', product.id)"
       >
         <HeartIcon
           class="w-5 h-5"
@@ -47,6 +47,7 @@
 
       <button
         class="w-full px-2 py-1 rounded-xl text-white bg-blue-600 font-medium transition-colors duration-200 ease-in-out hover:bg-blue-700 cursor-pointer"
+        @click="$emit('handleAddToCart', product.id)"
       >
         Add to cart
       </button>
