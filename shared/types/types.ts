@@ -15,3 +15,10 @@ export interface Product {
   brand: string
   thumbnail: string
 }
+
+export interface PaginatedProducts {
+  products: Product[]
+  total: number
+  skip: number
+  limit: number
+}
