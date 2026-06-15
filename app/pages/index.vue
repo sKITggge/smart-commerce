@@ -2,13 +2,19 @@
   <div>
     <MainHero />
     <div class="grid grid-cols-5">
-      <ProductCard :product="product" />
+      <ProductCard
+        :product="product"
+        @handle-add-to-wishlist="(id) => toggleItem(id)"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Product } from '#shared/types/types'
+import { useWishlistStore } from '~~/stores/wishlist'
+
+const { toggleItem } = useWishlistStore()
 
 const product: Product = {
   id: 1,
