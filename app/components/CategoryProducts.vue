@@ -66,9 +66,6 @@ const modules = [Navigation]
 .product-slide {
   height: auto;
   display: flex;
-}
-
-.product-slide {
   width: 16rem;
 }
 
