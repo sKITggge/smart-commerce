@@ -49,6 +49,8 @@ export const useFetchProducts = (
         products.value.push(...response.products)
         loadedCount.value += response.products.length
       }
+    } catch (error: unknown) {
+      console.error(error)
     } finally {
       loadingRef.value = false
     }
