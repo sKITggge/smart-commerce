@@ -2,6 +2,7 @@ import type { Ref } from 'vue'
 
 export const useFetchProducts = (
   category: Ref<string>,
+  sortOption: Ref<string>,
   perPage: Ref<number>,
   currentPage: Ref<number>
 ) => {
@@ -21,8 +22,8 @@ export const useFetchProducts = (
 
   const url = computed(() => {
     return category.value
-      ? `https://dummyjson.com/products/category/${category.value}`
-      : 'https://dummyjson.com/products'
+      ? `https://dummyjson.com/products/category/${category.value}?sortBy=${sortOption.value}`
+      : `https://dummyjson.com/products?sortBy=${sortOption.value}`
   })
 
   const fetchChunk = async (reset = false) => {
@@ -78,7 +79,7 @@ export const useFetchProducts = (
   }
 
   watch(
-    [category, currentPage, perPage],
+    [category, sortOption, currentPage, perPage],
     () => {
       reset()
     },

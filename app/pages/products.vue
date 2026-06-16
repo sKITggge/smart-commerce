@@ -12,7 +12,15 @@
     </div>
 
     <div class="flex justify-between items-center gap-4 mb-4">
-      <span class="text-lg font-semibold">Filters</span>
+      <div class="flex gap-6">
+        <span class="text-lg font-semibold">Filters</span>
+        <button
+          class="text-gray-500 text-sm cursor-pointer"
+          @click="resetCategory"
+        >
+          Clear Filters
+        </button>
+      </div>
 
       <div class="w-full sm:w-64">
         <Dropdown
@@ -131,6 +139,33 @@ const { categories, isLoading: isCategoriesLoading, error } = useFetchCategories
 
 const searchCategory = ref((route.query.category as string) ?? '')
 
+const resetCategory = () => {
+  searchCategory.value = ''
+}
+
+type SortOption = 'price&order=asc' | 'price&order=desc' | 'title&order=asc' | 'title&order=desc'
+
+const sortOptions = [
+  {
+    label: 'Price: Low to High',
+    value: 'price&order=asc'
+  },
+  {
+    label: 'Price: High to Low',
+    value: 'price&order=desc'
+  },
+  {
+    label: 'Name: A to Z',
+    value: 'title&order=asc'
+  },
+  {
+    label: 'Name: Z to A',
+    value: 'title&order=desc'
+  }
+]
+
+const sortOption = ref<SortOption>('price&order=asc')
+
 const currentPage = ref(1)
 const perPage = ref(10)
 
@@ -143,7 +178,7 @@ const {
   isLoadingMore,
   canLoadMore,
   loadMore
-} = useFetchProducts(searchCategory, perPage, currentPage)
+} = useFetchProducts(searchCategory, sortOption, perPage, currentPage)
 
 useInfiniteScroll(
   loadMoreTrigger,
@@ -180,27 +215,4 @@ watch(searchCategory, (newVal) => {
     })
   }
 })
-
-type SortOption = 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
-
-const sortOptions = [
-  {
-    label: 'Price: Low to High',
-    value: 'price-asc'
-  },
-  {
-    label: 'Price: High to Low',
-    value: 'price-desc'
-  },
-  {
-    label: 'Name: A to Z',
-    value: 'name-asc'
-  },
-  {
-    label: 'Name: Z to A',
-    value: 'name-desc'
-  }
-]
-
-const sortOption = ref<SortOption>('price-asc')
 </script>
