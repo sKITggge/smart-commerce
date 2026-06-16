@@ -21,28 +21,15 @@ export const useWishlistStore = defineStore('wishlist', {
   },
 
   actions: {
-    toggleItem(id: number) {
-      if (this.ids.includes(id)) {
-        this.ids = this.ids.filter((i) => i !== id)
-        this.items = this.items.filter((p) => p.id !== id)
+    toggleItem(product: Product) {
+      if (this.ids.includes(product.id)) {
+        this.ids = this.ids.filter((i) => i !== product.id)
+        this.items = this.items.filter((p) => p.id !== product.id)
       } else {
-        this.ids.push(id)
-        this.fetchProductById(id)
+        this.ids.push(product.id)
+        this.items.push(product)
       }
       this.saveToLocalStorage()
-    },
-
-    async fetchProductById(id: number) {
-      if (this.items.some((p) => p.id === id)) return
-
-      this.loading = true
-
-      try {
-        const product = await $fetch<Product>(`https://dummyjson.com/products/${id}`)
-        this.items.push(product)
-      } finally {
-        this.loading = false
-      }
     },
 
     async loadAllProducts() {
@@ -58,6 +45,8 @@ export const useWishlistStore = defineStore('wishlist', {
           $fetch<Product>(`https://dummyjson.com/products/${id}`)
         )
         this.items = await Promise.all(requests)
+      } catch (error: unknown) {
+        console.error(error)
       } finally {
         this.loading = false
       }

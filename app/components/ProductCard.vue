@@ -20,7 +20,7 @@
       <button
         class="absolute right-2 bottom-2 wishlist-button bg-blue-600 hover:bg-blue-700 transition-colors duration-200 ease-in-out"
         :class="{ 'bg-red-600 hover:bg-red-700': isInWishlist }"
-        @click.prevent.stop="$emit('handleAddToWishlist', product.id)"
+        @click.prevent.stop="$emit('handleAddToWishlist', product)"
       >
         <HeartIcon
           class="w-5 h-5"
@@ -68,7 +68,8 @@ const wishlistStore = useWishlistStore()
 const isInWishlist = computed(() => wishlistStore.isInWishlist(product.id))
 
 defineEmits<{
-  (e: 'handleAddToCart' | 'handleAddToWishlist', id: number): void
+  (e: 'handleAddToCart', id: number): void
+  (e: 'handleAddToWishlist', product: Product): void
 }>()
 
 const discountedPrice = computed(() => {
