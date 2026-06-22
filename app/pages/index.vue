@@ -1,26 +1,26 @@
 <template>
   <div>
     <MainHero />
-    <div class="grid grid-cols-5">
-      <ProductCard :product="product" />
+
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-8">Popular Categories</h1>
+
+      <div
+        v-if="categories.length"
+        class="space-y-8 lg:space-y-12"
+      >
+        <div
+          v-for="cat in categories"
+          :key="cat.slug"
+        >
+          <CategoryProducts :category="cat" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Product } from '#shared/types/types'
-
-const product: Product = {
-  id: 1,
-  title: 'Essence Mascara Lash Princess',
-  description:
-    'The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula.',
-  category: 'beauty',
-  price: 9.99,
-  discountPercentage: 10.48,
-  rating: 2.56,
-  brand: 'Essence',
-  thumbnail:
-    'https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp'
-}
+const { categories: allCategories } = useFetchCategories()
+const categories = computed(() => allCategories.value?.slice(0, 3) || [])
 </script>
