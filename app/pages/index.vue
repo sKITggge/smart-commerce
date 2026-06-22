@@ -4,7 +4,7 @@
     <div class="grid grid-cols-5">
       <ProductCard
         :product="product"
-        @handle-add-to-wishlist="(pr) => toggleItem(pr)"
+        @handle-add-to-wishlist="toggleItem"
       />
     </div>
   </div>

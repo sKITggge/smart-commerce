@@ -33,7 +33,7 @@
           v-for="product in products"
           :key="product.id"
           :product="product"
-          @handle-add-to-wishlist="(pr) => store.toggleItem(pr)"
+          @handle-add-to-wishlist="store.toggleItem"
         />
       </div>
     </div>
