@@ -34,5 +34,5 @@ img, picture {
 }
 
 .wishlist-button {
-    @apply flex w-10 h-10 rounded-full items-center justify-center transition-all opacity-0 group-hover:opacity-100 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer
+    @apply flex w-10 h-10 rounded-full items-center justify-center transition-all opacity-0 group-hover:opacity-100 text-white cursor-pointer
 }
