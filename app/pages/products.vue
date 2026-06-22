@@ -53,7 +53,7 @@
           v-if="isCategoriesLoading"
           class="flex justify-center p-4"
         >
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+          <AppLoader />
         </div>
 
         <div
@@ -83,7 +83,7 @@
           v-if="isProductsLoading"
           class="flex justify-center p-10"
         >
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+          <AppLoader />
         </div>
 
         <template v-else-if="products.length">
@@ -101,10 +101,7 @@
             ref="loadMoreTrigger"
             class="flex justify-center py-6"
           >
-            <div
-              v-if="isLoadingMore"
-              class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
-            />
+            <AppLoader v-if="isLoadingMore" />
           </div>
 
           <div class="mt-6">
@@ -132,6 +129,8 @@
 <script setup lang="ts">
 import { useInfiniteScroll } from '@vueuse/core'
 import type { PageState } from 'primevue'
+import type { SortOption } from '#shared/types/types'
+import AppLoader from '~/components/AppLoader.vue'
 
 const route = useRoute()
 
@@ -143,28 +142,14 @@ const resetCategory = () => {
   searchCategory.value = ''
 }
 
-type SortOption = 'price&order=asc' | 'price&order=desc' | 'title&order=asc' | 'title&order=desc'
-
-const sortOptions = [
-  {
-    label: 'Price: Low to High',
-    value: 'price&order=asc'
-  },
-  {
-    label: 'Price: High to Low',
-    value: 'price&order=desc'
-  },
-  {
-    label: 'Name: A to Z',
-    value: 'title&order=asc'
-  },
-  {
-    label: 'Name: Z to A',
-    value: 'title&order=desc'
-  }
+const sortOptions: { label: string; value: SortOption }[] = [
+  { label: 'Price: Low to High', value: { sortBy: 'price', order: 'asc' } },
+  { label: 'Price: High to Low', value: { sortBy: 'price', order: 'desc' } },
+  { label: 'Name: A to Z', value: { sortBy: 'title', order: 'asc' } },
+  { label: 'Name: Z to A', value: { sortBy: 'title', order: 'desc' } }
 ]
 
-const sortOption = ref<SortOption>('price&order=asc')
+const sortOption = ref<SortOption>({ sortBy: 'price', order: 'asc' })
 
 const currentPage = ref(1)
 const perPage = ref(10)

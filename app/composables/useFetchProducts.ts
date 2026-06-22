@@ -1,8 +1,9 @@
 import type { Ref } from 'vue'
+import type { SortOption } from '#shared/types/types'
 
 export const useFetchProducts = (
   category: Ref<string>,
-  sortOption: Ref<string>,
+  sortOption: Ref<SortOption>,
   perPage: Ref<number>,
   currentPage: Ref<number>
 ) => {
@@ -22,8 +23,8 @@ export const useFetchProducts = (
 
   const url = computed(() => {
     return category.value
-      ? `https://dummyjson.com/products/category/${category.value}?sortBy=${sortOption.value}`
-      : `https://dummyjson.com/products?sortBy=${sortOption.value}`
+      ? `https://dummyjson.com/products/category/${category.value}`
+      : `https://dummyjson.com/products`
   })
 
   const fetchChunk = async (reset = false) => {
@@ -36,6 +37,8 @@ export const useFetchProducts = (
     try {
       const response = await $fetch<PaginatedProducts>(url.value, {
         query: {
+          sortBy: sortOption.value.sortBy,
+          order: sortOption.value.order,
           limit: chunkSize,
           skip
         }
