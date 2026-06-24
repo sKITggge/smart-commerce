@@ -34,6 +34,8 @@
           <ProductCard
             class="w-full"
             :product="product"
+            @handle-add-to-wishlist="wishlistStore.toggleItem"
+            @handle-add-to-cart="cartStore.toggleItem"
           />
         </SwiperSlide>
       </Swiper>
@@ -54,6 +56,8 @@ import { Navigation } from 'swiper/modules'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
+import { useCartStore } from '~~/stores/cart'
+import { useWishlistStore } from '~~/stores/wishlist'
 
 const props = defineProps<{ category: Category }>()
 
@@ -65,6 +69,9 @@ const currentPage = ref(1)
 const { products, isLoading } = useFetchProducts(category, sortOption, perPage, currentPage)
 
 const modules = [Navigation]
+
+const wishlistStore = useWishlistStore()
+const cartStore = useCartStore()
 </script>
 
 <style scoped>
