@@ -164,4 +164,10 @@ const checkoutProducts = () => {
   isOpen.value = false
   store.emptyCart()
 }
+
+onMounted(() => {
+  if (store.ids.length && !store.items.length) {
+    store.loadAllProducts()
+  }
+})
 </script>

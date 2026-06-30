@@ -44,6 +44,11 @@
 import { useWishlistStore } from '~~/stores/wishlist'
 
 const store = useWishlistStore()
-
 const { count, products, loading } = storeToRefs(store)
+
+onMounted(() => {
+  if (store.ids.length && !store.items.length) {
+    store.loadAllProducts()
+  }
+})
 </script>
