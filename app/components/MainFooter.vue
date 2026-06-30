@@ -9,26 +9,28 @@
       </div>
 
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 py-8 border-t border-b border-gray-200"
+        class="grid grid-cols-1 sm:grid-cols-2 md:flex justify-between gap-8 py-8 border-t border-b border-gray-200"
       >
         <div
           v-for="column in footerLinks"
           :key="column.title"
         >
-          <h3 class="font-semibold mb-3">{{ column.title }}</h3>
-          <ul class="space-y-2">
-            <li
-              v-for="link in column.links"
-              :key="link.label"
-            >
-              <NuxtLink
-                :to="link.to"
-                class="text-gray-600 hover:text-blue-400 transition-colors"
+          <div class="w-fit mx-auto">
+            <h3 class="font-semibold mb-3">{{ column.title }}</h3>
+            <ul class="space-y-2">
+              <li
+                v-for="link in column.links"
+                :key="link.label"
               >
-                {{ link.label }}
-              </NuxtLink>
-            </li>
-          </ul>
+                <NuxtLink
+                  :to="link.to"
+                  class="text-gray-600 hover:text-blue-400 transition-colors"
+                >
+                  {{ link.label }}
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -53,19 +55,19 @@ const footerLinks = [
   {
     title: 'Support',
     links: [
-      { label: 'Contact Us', to: '/contact' },
-      { label: 'FAQs', to: '/faqs' },
-      { label: 'Shipping', to: '/shipping' },
-      { label: 'Returns', to: '/returns' }
+      { label: 'Contact Us', to: '/' },
+      { label: 'FAQs', to: '/' },
+      { label: 'Shipping', to: '/' },
+      { label: 'Returns', to: '/' }
     ]
   },
   {
     title: 'Company',
     links: [
-      { label: 'About', to: '/about' },
-      { label: 'Careers', to: '/careers' },
-      { label: 'Privacy', to: '/privacy' },
-      { label: 'Terms', to: '/terms' }
+      { label: 'About', to: '/' },
+      { label: 'Careers', to: '/' },
+      { label: 'Privacy', to: '/' },
+      { label: 'Terms', to: '/' }
     ]
   }
 ]

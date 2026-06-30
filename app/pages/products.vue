@@ -143,13 +143,14 @@ const resetCategory = () => {
 }
 
 const sortOptions: { label: string; value: SortOption }[] = [
+  { label: 'Featured', value: { sortBy: '', order: '' } },
   { label: 'Price: Low to High', value: { sortBy: 'price', order: 'asc' } },
   { label: 'Price: High to Low', value: { sortBy: 'price', order: 'desc' } },
-  { label: 'Name: A to Z', value: { sortBy: 'title', order: 'asc' } },
-  { label: 'Name: Z to A', value: { sortBy: 'title', order: 'desc' } }
+  { label: 'Top Rated', value: { sortBy: 'rating', order: 'desc' } },
+  { label: 'Best Price', value: { sortBy: 'discountPercentage', order: 'desc' } }
 ]
 
-const sortOption = ref<SortOption>({ sortBy: 'price', order: 'asc' })
+const sortOption = ref<SortOption>({ sortBy: '', order: '' })
 
 const currentPage = ref(1)
 const perPage = ref(10)

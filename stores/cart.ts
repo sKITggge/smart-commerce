@@ -67,6 +67,10 @@ export const useCartStore = defineStore('cart', {
       this.saveToLocalStorage()
     },
 
+    getProductCount(id: number) {
+      return this.items.find((p) => p.item.id === id)?.quantity ?? 0
+    },
+
     removeItem(id: number) {
       if (!this.isInCart(id)) return
 
