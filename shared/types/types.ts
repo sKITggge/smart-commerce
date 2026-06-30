@@ -12,8 +12,19 @@ export interface Product {
   price: number
   discountPercentage: number
   rating: number
-  brand: string
+  availabilityStatus: string
+  brand?: string
+  weight?: number
+  stock?: number
+  warrantyInformation?: string
+  reviews: Review[]
   thumbnail: string
+}
+
+export interface Review {
+  rating: number
+  comment: string
+  reviewerName: string
 }
 
 export interface PaginatedProducts {

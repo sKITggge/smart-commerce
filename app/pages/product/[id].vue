@@ -56,7 +56,7 @@
 
           <div class="flex items-center gap-2 mt-4 leading-4">
             <div class="w-1.5 h-1.5 rounded-full bg-green-600"></div>
-            <div>In Stock</div>
+            <div>{{ product.availabilityStatus }}</div>
           </div>
 
           <div class="mt-5 text-sm leading-7 text-gray-600 md:text-base">
@@ -132,6 +132,43 @@
           </div>
         </div>
       </div>
+
+      <div
+        v-if="specifications.length"
+        class="mt-8 border-t border-gray-200 pt-6"
+      >
+        <h2 class="text-lg font-semibold text-gray-900">Specifications</h2>
+        <dl class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div
+            v-for="spec in specifications"
+            :key="spec.label"
+            class="flex justify-between border-b border-gray-100 py-2"
+          >
+            <dt class="text-sm font-medium text-gray-500">{{ spec.label }}</dt>
+            <dd class="text-sm font-medium text-gray-900">{{ spec.value }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div
+        v-if="product.reviews && product.reviews.length"
+        class="mt-8 border-t border-gray-200 pt-6"
+      >
+        <h2 class="text-lg font-semibold text-gray-900">Customer Reviews</h2>
+        <div class="mt-4 space-y-4">
+          <div
+            v-for="review in product.reviews"
+            :key="review.reviewerName"
+            class="border-b border-gray-100 pb-4 last:border-0"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-sm font-semibold text-gray-900">{{ review.reviewerName }}</span>
+              <RatingStars :rating="review.rating" />
+            </div>
+            <p class="mt-1 text-sm text-gray-600">{{ review.comment }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div
@@ -180,4 +217,18 @@ const breadcrumbsItems = computed(() => [
     path: `/product/${product.value?.id}`
   }
 ])
+
+const specifications = computed(() => {
+  const p = product.value
+  if (!p) return []
+
+  const specs = [
+    { label: 'Brand', value: p?.brand },
+    { label: 'Weight', value: p.weight ? `${p.weight} g` : undefined },
+    { label: 'Stock', value: p.stock ? `${p.stock} units` : undefined },
+    { label: 'Warranty', value: p.warrantyInformation }
+  ]
+
+  return specs.filter((spec) => spec.value)
+})
 </script>
