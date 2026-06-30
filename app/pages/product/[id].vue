@@ -169,6 +169,20 @@
           </div>
         </div>
       </div>
+
+      <div class="mt-6">
+        <div class="flex justify-between">
+          <h2 class="text-lg font-semibold text-gray-900">You May Also Like</h2>
+          <NuxtLink
+            class="text-gray-600 hover:text-blue-400 transition-colors"
+            :to="{ path: '/products', query: { category: product.category } }"
+          >
+            See More
+          </NuxtLink>
+        </div>
+
+        <CategoryProducts :category="product.category" />
+      </div>
     </div>
 
     <div

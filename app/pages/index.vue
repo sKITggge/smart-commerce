@@ -13,7 +13,7 @@
           v-for="cat in categories"
           :key="cat.slug"
         >
-          <CategoryProducts :category="cat" />
+          <CategoryProducts :category="cat.slug" />
         </div>
       </div>
     </div>

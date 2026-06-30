@@ -55,9 +55,9 @@ import { Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
-const props = defineProps<{ category: Category }>()
+const props = defineProps<{ category: string }>()
 
-const { products, isLoading } = useFetchProducts(props.category.slug, 10)
+const { products, isLoading } = useFetchProducts(props.category, 10)
 
 const modules = [Navigation]
 </script>
