@@ -1,6 +1,11 @@
 <template>
   <div class="category-section">
-    <h2 class="text-2xl font-semibold mb-4">{{ category.name }}</h2>
+    <h2
+      v-if="showTitle"
+      class="text-2xl font-semibold mb-4"
+    >
+      {{ capitalize(category) }}
+    </h2>
 
     <div
       v-if="isLoading"
@@ -20,7 +25,7 @@
       class="relative"
     >
       <Swiper
-        :key="`swiper-${category.slug}-${products.products.length}`"
+        :key="`swiper-${category}-${products.products.length}`"
         :modules="modules"
         :slides-per-view="'auto'"
         :space-between="24"
@@ -54,8 +59,17 @@ import { Navigation } from 'swiper/modules'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
+import { capitalize } from 'vue'
 
-const props = defineProps<{ category: string }>()
+const props = withDefaults(
+  defineProps<{
+    category: string
+    showTitle?: boolean
+  }>(),
+  {
+    showTitle: true
+  }
+)
 
 const { products, isLoading } = useFetchProducts(props.category, 10)
 

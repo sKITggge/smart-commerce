@@ -181,7 +181,10 @@
           </NuxtLink>
         </div>
 
-        <CategoryProducts :category="product.category" />
+        <CategoryProducts
+          :category="product.category"
+          :showTitle="false"
+        />
       </div>
     </div>
 
