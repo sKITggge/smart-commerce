@@ -19,19 +19,36 @@
       />
 
       <div class="grid gap-8 md:grid-cols-2 md:gap-12">
-        <div class="relative rounded-2xl bg-gray-50 p-6 shadow-sm md:p-8">
-          <span
-            v-if="(product.discountPercentage ?? 0) > 0"
-            class="absolute left-2 top-2 inline-flex items-center rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow"
-          >
-            -{{ product.discountPercentage ?? 0 }}%
-          </span>
+        <div>
+          <div class="relative rounded-2xl bg-gray-50 p-6 shadow-sm md:p-8">
+            <span
+              v-if="(product.discountPercentage ?? 0) > 0"
+              class="absolute left-2 top-2 inline-flex items-center rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow"
+            >
+              -{{ product.discountPercentage ?? 0 }}%
+            </span>
 
-          <img
-            :src="product.thumbnail"
-            :alt="product.title"
-            class="h-[360px] w-full rounded-xl object-contain md:h-[460px]"
-          />
+            <img
+              :src="productImages[currentImageIdx]"
+              :alt="product.title"
+              class="h-[360px] w-full rounded-xl object-contain md:h-[460px]"
+            />
+          </div>
+          <div class="mt-4 flex gap-4 overflow-x-auto scrollbar-hidden">
+            <button
+              v-for="(img, idx) in productImages"
+              :key="img + '-' + idx"
+              :class="{ '!border-blue-600': idx === currentImageIdx }"
+              class="shrink-0 border border-gray-600 rounded-xl cursor-pointer"
+              @click="switchImage(idx)"
+            >
+              <img
+                :src="img"
+                :alt="product.title"
+                class="h-20 w-20 object-contain"
+              />
+            </button>
+          </div>
         </div>
 
         <div class="flex flex-col">
@@ -202,8 +219,8 @@ import RatingStars from '~/components/RatingStars.vue'
 import { useFetchProduct } from '~/composables/useFetchProduct'
 
 const route = useRoute()
-const userId = route.params.id as string
-const { product, isLoading, error } = useFetchProduct(userId)
+const productId = route.params.id as string
+const { product, isLoading, error } = useFetchProduct(productId)
 
 const discountedPrice = computed(() => {
   if (!product.value) return 0
@@ -248,4 +265,12 @@ const specifications = computed(() => {
 
   return specs.filter((spec) => spec.value)
 })
+
+const productImages = computed(() => Array(5).fill(product.value?.thumbnail))
+
+const currentImageIdx = ref<number>(0)
+
+const switchImage = (idx: number) => {
+  currentImageIdx.value = idx
+}
 </script>
