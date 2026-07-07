@@ -38,6 +38,9 @@ export const useCartStore = defineStore('cart', {
     taxedTotalPrice: (state) => {
       const total = state.items.reduce((sum, item) => sum + item.quantity * item.item.price, 0)
       return (total * 1.08).toFixed(2)
+    },
+    getProductCount: (state) => (id: number) => {
+      return state.ids.find((item) => item.id === id)?.quantity ?? 0
     }
   },
 
@@ -84,10 +87,6 @@ export const useCartStore = defineStore('cart', {
       }
     },
 
-    getProductCount(id: number) {
-      return this.ids.find((item) => item.id === id)?.quantity ?? 0
-    },
-
     removeItem(id: number) {
       this.ids = this.ids.filter((i) => i.id !== id)
       this.items = this.items.filter((item) => item.item.id !== id)
@@ -109,7 +108,7 @@ export const useCartStore = defineStore('cart', {
       this.loading = true
 
       try {
-        const requests = this.ids.map ((item) =>
+        const requests = this.ids.map((item) =>
           $fetch<Product>(`https://dummyjson.com/products/${item.id}`)
         )
         const products = await Promise.all(requests)
