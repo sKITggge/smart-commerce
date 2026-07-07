@@ -23,7 +23,6 @@ export const useSearchProducts = (query: Ref<string>, limit = 5) => {
       const term = q.trim()
 
       if (term.length < 3) {
-        data.value = { products: [], total: 0, skip: 0, limit: 0 }
         return
       }
 
@@ -32,8 +31,13 @@ export const useSearchProducts = (query: Ref<string>, limit = 5) => {
     { immediate: false }
   )
 
+  const products = computed(() => {
+    if (debouncedQuery.value.length < 3) return []
+    return data.value?.products ?? []
+  })
+
   return {
-    products: computed(() => data.value?.products ?? []),
+    products: products,
     isLoading: pending,
     error
   }

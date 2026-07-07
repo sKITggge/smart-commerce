@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="search"
     class="absolute -bottom-12 mx-4 sm:mx-auto sm:max-w-sm md:w-full right-0 left-0 md:relative md:bottom-0"
   >
     <div
@@ -18,6 +19,7 @@
         placeholder="Search products..."
       />
       <button
+        v-if="searchTerm.length"
         class="w-6 h-6 cursor-pointer"
         @click="clearSearch"
       >
@@ -48,6 +50,7 @@
           :key="product.id"
           :to="{ name: 'product-id', params: { id: product.id } }"
           class="flex gap-2 items-baseline-last justify-between p-2 rounded-2xl hover:bg-gray-100 transition-colors duration-200"
+          @click="clearSearch"
         >
           <div class="flex gap-4 items-start">
             <img
@@ -71,6 +74,7 @@
 
 <script setup lang="ts">
 import { useSearchProducts } from '~/composables/useSearchProducts'
+import { onClickOutside } from '@vueuse/core'
 
 defineProps<{
   isSearchOpen: boolean
@@ -81,6 +85,10 @@ const searchTerm = ref<string>('')
 const clearSearch = () => {
   searchTerm.value = ''
 }
+
+const target = useTemplateRef('search')
+
+onClickOutside(target, () => clearSearch())
 
 const { products, isLoading } = useSearchProducts(searchTerm)
 </script>
