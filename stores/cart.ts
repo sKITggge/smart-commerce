@@ -1,86 +1,106 @@
 import { defineStore } from 'pinia'
 import type { Product } from '#shared/types/types'
 
+interface StoredItem {
+  id: number
+  quantity: number
+}
+
 interface CartItem {
   item: Product
   quantity: number
 }
 
 interface CartState {
+  ids: StoredItem[]
   items: CartItem[]
   loading: boolean
 }
 
 export const useCartStore = defineStore('cart', {
   state: (): CartState => ({
+    ids: [],
     items: [],
     loading: false
   }),
 
   getters: {
-    ids: (state) => state.items.map((p) => p.item.id),
-    isInCart: (state) => (id: number) => state.items.some((p) => p.item.id === id),
-    count: (state) => state.items.reduce((count, item) => count + item.quantity, 0),
-    totalPrice: (state) =>
-      (state.items.reduce((count, item) => count + item.quantity * item.item.price, 0)).toFixed(2),
-    taxAmount: (state) =>
-      (
-        state.items.reduce((count, item) => count + item.quantity * item.item.price, 0) * 0.08
-      ).toFixed(2),
+    isInCart: (state) => (id: number) => state.ids.some((item) => item.id === id),
+    count: (state) => state.ids.reduce((count, item) => count + item.quantity, 0),
+    totalPrice: (state) => {
+      const total = state.items.reduce((sum, item) => sum + item.quantity * item.item.price, 0)
+      return total.toFixed(2)
+    },
+    taxAmount: (state) => {
+      const total = state.items.reduce((sum, item) => sum + item.quantity * item.item.price, 0)
+      return (total * 0.08).toFixed(2)
+    },
     taxedTotalPrice: (state) => {
       const total = state.items.reduce((sum, item) => sum + item.quantity * item.item.price, 0)
       return (total * 1.08).toFixed(2)
+    },
+    getProductCount: (state) => (id: number) => {
+      return state.ids.find((item) => item.id === id)?.quantity ?? 0
     }
   },
 
   actions: {
     toggleItem(product: Product) {
-      if (this.isInCart(product.id)) {
+      const existing = this.ids.findIndex((i) => i.id === product.id)
+
+      if (existing !== -1) {
+        this.ids.splice(existing, 1)
         this.items = this.items.filter((p) => p.item.id !== product.id)
       } else {
+        this.ids.push({ id: product.id, quantity: 1 })
         this.items.push({ item: product, quantity: 1 })
       }
+
       this.saveToLocalStorage()
     },
 
     incrementItem(id: number) {
-      if (!this.isInCart(id)) return
-
-      this.items.map((item) => {
-        if (item.item.id === id) {
-          item.quantity += 1
+      const idx = this.ids.findIndex((i) => i.id === id)
+      if (idx === -1) return
+      const stored = this.ids[idx]
+      if (stored) {
+        stored.quantity += 1
+        const itemIdx = this.items.findIndex((ci) => ci.item.id === id)
+        if (itemIdx !== -1 && this.items[itemIdx]) {
+          this.items[itemIdx].quantity += 1
         }
-      })
-
-      this.saveToLocalStorage()
+        this.saveToLocalStorage()
+      }
     },
 
     decrementItem(id: number) {
-      if (!this.isInCart(id)) return
-
-      this.items.map((item) => {
-        if (item.item.id === id && item.quantity > 1) {
-          item.quantity -= 1
+      const idx = this.ids.findIndex((i) => i.id === id)
+      if (idx === -1) return
+      const stored = this.ids[idx]
+      if (stored && stored.quantity > 1) {
+        stored.quantity -= 1
+        const itemIdx = this.items.findIndex((ci) => ci.item.id === id)
+        if (itemIdx !== -1 && this.items[itemIdx]) {
+          this.items[itemIdx].quantity -= 1
         }
-      })
-
-      this.saveToLocalStorage()
+        this.saveToLocalStorage()
+      }
     },
 
     removeItem(id: number) {
-      if (!this.isInCart(id)) return
-
+      this.ids = this.ids.filter((i) => i.id !== id)
       this.items = this.items.filter((item) => item.item.id !== id)
       this.saveToLocalStorage()
     },
 
     emptyCart() {
+      this.ids = []
       this.items = []
       this.saveToLocalStorage()
     },
 
-    async loadAllProducts(stored: { id: number; quantity: number }[]) {
-      if (stored.length === 0) {
+    async loadAllProducts() {
+      if (this.ids.length === 0) {
         this.items = []
         return
       }
@@ -88,13 +108,13 @@ export const useCartStore = defineStore('cart', {
       this.loading = true
 
       try {
-        const requests = stored.map((item) =>
+        const requests = this.ids.map((item) =>
           $fetch<Product>(`https://dummyjson.com/products/${item.id}`)
         )
         const products = await Promise.all(requests)
 
         this.items = products.map((product) => {
-          const quantity = stored.find((i) => product.id === i.id)?.quantity ?? 1
+          const quantity = this.ids.find((i) => product.id === i.id)?.quantity ?? 1
           return {
             item: product,
             quantity: quantity
@@ -109,8 +129,7 @@ export const useCartStore = defineStore('cart', {
 
     saveToLocalStorage() {
       if (import.meta.client) {
-        const cartItemsCompact = this.items.map((p) => ({ id: p.item.id, quantity: p.quantity }))
-        localStorage.setItem('cart_ids', JSON.stringify(cartItemsCompact))
+        localStorage.setItem('cart_ids', JSON.stringify(this.ids))
       }
     },
 
@@ -118,7 +137,7 @@ export const useCartStore = defineStore('cart', {
       if (import.meta.client) {
         const stored = localStorage.getItem('cart_ids')
         if (stored) {
-          this.loadAllProducts(JSON.parse(stored))
+          this.ids = JSON.parse(stored)
         }
       }
     }

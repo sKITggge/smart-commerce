@@ -92,4 +92,15 @@ const cartStore = useCartStore()
     width: 16rem;
   }
 }
+
+.swiper-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.swiper-slide {
+  flex: 0 0 auto;
+  width: auto;
+}
 </style>

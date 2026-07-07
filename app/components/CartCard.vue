@@ -23,27 +23,12 @@
         {{ product.title }}
       </NuxtLink>
 
-      <div
-        class="mt-3 inline-flex w-fit items-center gap-3 rounded-xl border border-gray-200 bg-white px-3 py-2"
-      >
-        <button
-          type="button"
-          class="h-6 w-6 rounded-md text-gray-700 transition hover:bg-gray-50 cursor-pointer"
-          @click.prevent.stop="$emit('handleDecrement', product.id)"
-        >
-          −
-        </button>
-        <span class="min-w-5 text-center text-sm font-semibold text-gray-900">
-          {{ quantity }}
-        </span>
-        <button
-          type="button"
-          class="h-6 w-6 rounded-md text-gray-700 transition hover:bg-gray-50 cursor-pointer"
-          @click.prevent.stop="$emit('handleIncrement', product.id)"
-        >
-          +
-        </button>
-      </div>
+      <CounterButton
+        :quantity="quantity"
+        class="mt-3"
+        @increment="$emit('handleIncrement', product.id)"
+        @decrement="$emit('handleDecrement', product.id)"
+      />
     </div>
 
     <div class="flex min-w-[120px] flex-col items-end justify-between self-stretch">
