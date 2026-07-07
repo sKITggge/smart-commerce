@@ -70,7 +70,7 @@
 
           <button
             class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 cursor-pointer"
-            @click="toggleOpen"
+            @click="openModal"
           >
             Proceed to Checkout
           </button>
@@ -120,7 +120,7 @@
       >
         <div
           class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
-          @click="toggleOpen"
+          @click="closeModal"
         />
 
         <div
@@ -139,7 +139,7 @@
             </NuxtLink>
             <button
               class="inline-flex w-full items-center justify-center rounded-xl border border-red-500 px-4 py-2.5 text-sm text-red-500 transition hover:bg-red-100 cursor-pointer sm:w-auto"
-              @click="toggleOpen"
+              @click="closeModal"
             >
               Cancel
             </button>
@@ -158,7 +158,8 @@ const { count, items, loading, totalPrice, taxAmount, taxedTotalPrice } = storeT
 
 const isOpen = ref(false)
 
-const toggleOpen = () => (isOpen.value = !isOpen.value)
+const openModal = () => (isOpen.value = true)
+const closeModal = () => (isOpen.value = false)
 
 const checkoutProducts = () => {
   isOpen.value = false

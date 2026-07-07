@@ -27,17 +27,17 @@ export const useCartStore = defineStore('cart', {
   getters: {
     isInCart: (state) => (id: number) => state.ids.some((item) => item.id === id),
     count: (state) => state.ids.reduce((count, item) => count + item.quantity, 0),
-    totalPrice: (state) => {
-      const total = state.items.reduce((sum, item) => sum + item.quantity * item.item.price, 0)
-      return total.toFixed(2)
+    subtotal: (state) => {
+      return state.items.reduce((sum, item) => sum + item.quantity * item.item.price, 0)
     },
-    taxAmount: (state) => {
-      const total = state.items.reduce((sum, item) => sum + item.quantity * item.item.price, 0)
-      return (total * 0.08).toFixed(2)
+    totalPrice() {
+      return (+this.subtotal).toFixed(2)
     },
-    taxedTotalPrice: (state) => {
-      const total = state.items.reduce((sum, item) => sum + item.quantity * item.item.price, 0)
-      return (total * 1.08).toFixed(2)
+    taxAmount() {
+      return (+this.subtotal * 0.08).toFixed(2)
+    },
+    taxedTotalPrice() {
+      return (+this.subtotal * 1.08).toFixed(2)
     },
     getProductCount: (state) => (id: number) => {
       return state.ids.find((item) => item.id === id)?.quantity ?? 0
