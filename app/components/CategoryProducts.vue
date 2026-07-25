@@ -1,6 +1,6 @@
 <template>
   <div class="category-section">
-    <h2 class="text-2xl font-semibold mb-4">{{ category.name }}</h2>
+    <h2 class="text-2xl font-semibold mb-4">{{ category }}</h2>
 
     <div
       v-if="isLoading"
@@ -16,18 +16,18 @@
     </div>
 
     <div
-      v-else-if="products?.products?.length"
+      v-else-if="products?.length"
       class="relative"
     >
       <Swiper
-        :key="`swiper-${category.slug}-${products.products.length}`"
+        :key="`swiper-${category}-${products.length}`"
         :modules="modules"
         :slides-per-view="'auto'"
         :space-between="24"
         :navigation="true"
       >
         <SwiperSlide
-          v-for="product in products.products"
+          v-for="product in products"
           :key="product.id"
           class="product-slide pt-2"
         >
@@ -57,7 +57,12 @@ import 'swiper/css/navigation'
 
 const props = defineProps<{ category: Category }>()
 
-const { products, isLoading } = useFetchProducts(props.category.slug, 10)
+const category = ref(props.category.slug)
+const sortOption = ref<SortOption>({ sortBy: 'title', order: 'asc' })
+const perPage = ref(5)
+const currentPage = ref(1)
+
+const { products, isLoading } = useFetchProducts(category, sortOption, perPage, currentPage)
 
 const modules = [Navigation]
 </script>

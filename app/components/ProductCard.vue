@@ -18,8 +18,9 @@
       />
 
       <button
-        class="absolute right-2 bottom-2 wishlist-button"
-        @click="$emit('handleAddToWishlist', product.id)"
+        class="absolute right-2 bottom-2 wishlist-button bg-blue-600 hover:bg-blue-700 transition-colors duration-200 ease-in-out"
+        :class="{ 'bg-red-600 hover:bg-red-700': isInWishlist }"
+        @click.prevent.stop="$emit('handleAddToWishlist', product)"
       >
         <HeartIcon
           class="w-5 h-5"
@@ -47,7 +48,7 @@
 
       <button
         class="w-full px-2 py-1 rounded-xl text-white bg-blue-600 font-medium transition-colors duration-200 ease-in-out hover:bg-blue-700 cursor-pointer"
-        @click="$emit('handleAddToCart', product.id)"
+        @click.prevent.stop="$emit('handleAddToCart', product.id)"
       >
         Add to cart
       </button>
@@ -58,11 +59,17 @@
 <script setup lang="ts">
 import HeartIcon from '~/components/icons/HeartIcon.vue'
 import type { Product } from '#shared/types/types'
+import { useWishlistStore } from '~~/stores/wishlist'
 
 const { product } = defineProps<{ product: Product }>()
 
+const wishlistStore = useWishlistStore()
+
+const isInWishlist = computed(() => wishlistStore.isInWishlist(product.id))
+
 defineEmits<{
-  (e: 'handleAddToCart' | 'handleAddToWishlist', id: number): void
+  (e: 'handleAddToCart', id: number): void
+  (e: 'handleAddToWishlist', product: Product): void
 }>()
 
 const discountedPrice = computed(() => {

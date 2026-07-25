@@ -22,3 +22,8 @@ export interface PaginatedProducts {
   skip: number
   limit: number
 }
+
+export interface SortOption {
+  sortBy: 'price' | 'title'
+  order: 'asc' | 'desc'
+}
