@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     class="group rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-lg relative"
-    to="/"
+    :to="{ name: 'product-id', params: { id: product.id } }"
   >
     <div
       v-if="product.discountPercentage > 0"
@@ -47,11 +47,20 @@
       </div>
 
       <button
-        class="w-full px-2 py-1 rounded-xl text-white bg-blue-600 font-medium transition-colors duration-200 ease-in-out hover:bg-blue-700 cursor-pointer"
-        @click.prevent.stop="$emit('handleAddToCart', product.id)"
+        v-if="!isInCart"
+        class="w-full px-2 py-2 rounded-xl text-white bg-blue-600 font-medium transition-colors duration-200 ease-in-out hover:bg-blue-700 cursor-pointer"
+        @click.prevent.stop="$emit('handleAddToCart', product)"
       >
         Add to cart
       </button>
+
+      <CounterButton
+        v-else
+        class="w-full justify-around"
+        :quantity="cartStore.getProductCount(product.id)"
+        @increment="cartStore.incrementItem(product.id)"
+        @decrement="cartStore.decrementItem(product.id)"
+      />
     </div>
   </NuxtLink>
 </template>
@@ -60,6 +69,7 @@
 import HeartIcon from '~/components/icons/HeartIcon.vue'
 import type { Product } from '#shared/types/types'
 import { useWishlistStore } from '~~/stores/wishlist'
+import { useCartStore } from '~~/stores/cart'
 
 const { product } = defineProps<{ product: Product }>()
 
@@ -67,9 +77,12 @@ const wishlistStore = useWishlistStore()
 
 const isInWishlist = computed(() => wishlistStore.isInWishlist(product.id))
 
+const cartStore = useCartStore()
+
+const isInCart = computed(() => cartStore.isInCart(product.id))
+
 defineEmits<{
-  (e: 'handleAddToCart', id: number): void
-  (e: 'handleAddToWishlist', product: Product): void
+  (e: 'handleAddToCart' | 'handleAddToWishlist', product: Product): void
 }>()
 
 const discountedPrice = computed(() => {

@@ -24,6 +24,6 @@ export interface PaginatedProducts {
 }
 
 export interface SortOption {
-  sortBy: 'price' | 'title'
-  order: 'asc' | 'desc'
+  sortBy: 'price' | 'discountPercentage' | '' | 'rating'
+  order: 'asc' | 'desc' | ''
 }

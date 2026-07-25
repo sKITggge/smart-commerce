@@ -1,7 +1,7 @@
 <template>
   <section class="bg-gray-200">
     <div
-      class="container mx-auto p-4 pt-12 lg:p-10 lg:pt-24 flex flex-col md:flex-row justify-between gap-6"
+      class="container mx-auto p-4 pt-12 lg:py-10 lg:pt-24 flex flex-col md:flex-row justify-between gap-6"
     >
       <div class="flex flex-1 flex-col gap-4 lg:gap-6">
         <span class="w-fit py-1 px-2 rounded-full bg-blue-200/80 text-blue-600 text-sm">
@@ -21,7 +21,7 @@
           </NuxtLink>
         </div>
       </div>
-      <div class="flex flex-1 justify-center">
+      <div class="flex flex-1 justify-center xl:justify-end">
         <img
           class="rounded-2xl object-cover"
           src="/hero_bg.jpg"
