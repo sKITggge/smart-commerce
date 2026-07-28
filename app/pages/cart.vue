@@ -124,26 +124,70 @@
         />
 
         <div
-          class="relative w-full max-w-md flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-xl md:p-7"
+          class="relative flex w-full max-w-md flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-xl md:p-7"
         >
-          <h2 class="text-lg font-semibold text-gray-900">Success!</h2>
-          <p class="mt-1 text-sm text-gray-600">Your action has been completed successfully.</p>
+          <template v-if="modalStep === 'captcha'">
+            <h2 class="text-lg font-semibold text-gray-900">Verify you're human</h2>
+            <p class="text-sm text-gray-600">Complete the captcha to proceed with checkout.</p>
 
-          <div class="flex gap-4">
-            <NuxtLink
-              to="/"
-              class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
-              @click="checkoutProducts"
+            <ClientOnly>
+              <SmartCaptcha
+                v-if="config.public.smartCaptchaSiteKey"
+                :key="captchaKey"
+                :site-key="config.public.smartCaptchaSiteKey"
+                @success="handleCaptchaSuccess"
+              />
+              <p
+                v-else
+                class="text-sm text-red-600"
+              >
+                Captcha is not configured.
+              </p>
+            </ClientOnly>
+
+            <p
+              v-if="captchaError"
+              class="text-sm text-red-600"
             >
-              Back to Home
-            </NuxtLink>
+              {{ captchaError }}
+            </p>
+
+            <div
+              v-if="validating"
+              class="flex justify-center py-2"
+            >
+              <AppLoader />
+            </div>
+
             <button
-              class="inline-flex w-full items-center justify-center rounded-xl border border-red-500 px-4 py-2.5 text-sm text-red-500 transition hover:bg-red-100 cursor-pointer sm:w-auto"
+              class="inline-flex w-full items-center justify-center rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 transition hover:bg-gray-50 cursor-pointer"
+              :disabled="validating"
               @click="closeModal"
             >
               Cancel
             </button>
-          </div>
+          </template>
+
+          <template v-else>
+            <h2 class="text-lg font-semibold text-gray-900">Success!</h2>
+            <p class="text-sm text-gray-600">Your action has been completed successfully.</p>
+
+            <div class="flex gap-4">
+              <NuxtLink
+                to="/"
+                class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
+                @click="checkoutProducts"
+              >
+                Back to Home
+              </NuxtLink>
+              <button
+                class="inline-flex w-full items-center justify-center rounded-xl border border-red-500 px-4 py-2.5 text-sm text-red-500 transition hover:bg-red-100 cursor-pointer sm:w-auto"
+                @click="closeModal"
+              >
+                Cancel
+              </button>
+            </div>
+          </template>
         </div>
       </div>
     </Teleport>
@@ -153,17 +197,56 @@
 <script setup lang="ts">
 import { useCartStore } from '~~/stores/cart'
 
+const config = useRuntimeConfig()
+
 const store = useCartStore()
 const { count, items, loading, totalPrice, taxAmount, taxedTotalPrice } = storeToRefs(store)
 
-const isOpen = ref(false)
+type ModalStep = 'captcha' | 'success'
 
-const openModal = () => (isOpen.value = true)
-const closeModal = () => (isOpen.value = false)
+const isOpen = ref(false)
+const modalStep = ref<ModalStep>('captcha')
+const captchaKey = ref(0)
+const validating = ref(false)
+const captchaError = ref('')
+
+const openModal = () => {
+  modalStep.value = 'captcha'
+  captchaError.value = ''
+  captchaKey.value++
+  isOpen.value = true
+}
+
+const closeModal = () => {
+  isOpen.value = false
+  modalStep.value = 'captcha'
+  captchaError.value = ''
+  validating.value = false
+}
 
 const checkoutProducts = () => {
   isOpen.value = false
   store.emptyCart()
+}
+
+const handleCaptchaSuccess = async (token: string) => {
+  if (validating.value) return
+
+  validating.value = true
+  captchaError.value = ''
+
+  try {
+    await $fetch('/api/validate', {
+      method: 'POST',
+      body: { captchaToken: token }
+    })
+    modalStep.value = 'success'
+  } catch {
+    captchaError.value = 'Captcha validation failed. Please try again.'
+    captchaKey.value++
+  } finally {
+    validating.value = false
+  }
 }
 
 onMounted(() => {

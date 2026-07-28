@@ -19,5 +19,11 @@ export default defineNuxtConfig({
         }
       }
     }
+  },
+  runtimeConfig: {
+    smartCaptchaSecret: process.env.SMARTCAPTCHA_SECRET,
+    public: {
+      smartCaptchaSiteKey: process.env.SMARTCAPTCHA_SITE_KEY
+    }
   }
 })
